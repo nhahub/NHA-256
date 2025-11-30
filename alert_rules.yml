@@ -1,0 +1,20 @@
+groups:
+  - name: url_shortener_alerts
+    rules:
+      - alert: URLShortenerDown
+        expr: up{job="url-shortener"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "URL Shortener service is down"
+          description: "Prometheus cannot reach the url-shortener container."
+
+      - alert: NoURLsBeingShortened
+        expr: increase(urls_shortened_total[5m]) == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No URLs shortened recently"
+          description: "The service has not shortened any URLs in the past 5 minutes."
